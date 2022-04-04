@@ -44,7 +44,7 @@ public class LendingPlatformServiceImpl implements LendingPlatformService {
     @Override
     public boolean checkRequestHeaderValidity(String authorization) {
         //Check if the request header is valid
-        AUTHORIZATION = "Basic " + Base64.getEncoder().encodeToString((env.getProperty("api.authorization.username") + ":" + env.getProperty("api.authorization.password").trim()).getBytes());
+        AUTHORIZATION = "Basic " + Base64.getEncoder().encodeToString((env.getProperty("api.lending.authorization.username") + ":" + env.getProperty("api.lending.authorization.username").trim()).getBytes());
         return AUTHORIZATION.equals(authorization);
     }
 
