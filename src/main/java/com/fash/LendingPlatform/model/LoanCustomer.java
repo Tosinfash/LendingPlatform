@@ -26,10 +26,9 @@ public class LoanCustomer implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Basic(optional = false)
+     @Basic(optional = false)
     @Column(name = "id")
     private Long id;
-
     @Column(name = "customer_name")
     private String customerName;
     @Column(name = "mobile_number")

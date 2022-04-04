@@ -78,11 +78,12 @@ public class LendingPlatformServiceImpl implements LendingPlatformService {
             }
             responsePayload.setResponseCode(env.getProperty("api.lending.success.code"));
             responsePayload.setLoanOffers(offers);
+            String responseJson = gson.toJson(responsePayload);
+            return responseJson;
 
         } catch (Exception ex) {
             return ex.getMessage();
         }
-        return "";
     }
 
     @Override
