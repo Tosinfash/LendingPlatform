@@ -5,13 +5,9 @@
  */
 package com.fash.LendingPlatform;
 
-import com.ulisesbocchio.jasyptspringboot.annotation.EnableEncryptableProperties;
 import java.util.Properties;
 import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
-import org.jasypt.encryption.StringEncryptor;
-import org.jasypt.encryption.pbe.PooledPBEStringEncryptor;
-import org.jasypt.encryption.pbe.config.SimpleStringPBEConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.ApplicationContext;
@@ -44,7 +40,6 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 @EnableJpaRepositories(basePackages = {"com.fash.LendingPlatform.repository"})
 @EnableTransactionManagement
 @EnableWebMvc
-@EnableEncryptableProperties
 public class AppConfig extends WebMvcConfigurerAdapter{
     
     
@@ -102,22 +97,5 @@ public class AppConfig extends WebMvcConfigurerAdapter{
         LocalValidatorFactoryBean bean = new LocalValidatorFactoryBean();
         bean.setValidationMessageSource(messageSource());
         return bean;
-    }
-
-    @Bean(name = "jasyptStringEncryptor")
-    public StringEncryptor getPasswordEncryptor() {
-        PooledPBEStringEncryptor encryptor = new PooledPBEStringEncryptor();
-        SimpleStringPBEConfig config = new SimpleStringPBEConfig();
-        config.setPassword("H*-lLo5,e:2.VN"); // encryptor's private key
-        config.setAlgorithm("PBEWithMD5AndDES");
-        config.setKeyObtentionIterations("1000");
-        config.setPoolSize("1");
-        config.setProviderName("SunJCE");
-        config.setSaltGeneratorClassName("org.jasypt.salt.RandomSaltGenerator");
-        config.setStringOutputType("base64");
-
-        encryptor.setConfig(config);
-        return encryptor;
-    }
-    
+    }    
 }
