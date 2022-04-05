@@ -44,7 +44,7 @@ public class LendingPlatformServiceImpl implements LendingPlatformService {
     @Override
     public boolean checkRequestHeaderValidity(String authorization) {
         //Check if the request header is valid
-        AUTHORIZATION = "Basic " + Base64.getEncoder().encodeToString((env.getProperty("api.lending.authorization.username") + ":" + env.getProperty("api.lending.authorization.username").trim()).getBytes());
+        AUTHORIZATION = "Basic " + Base64.getEncoder().encodeToString((env.getProperty("api.lending.authorization.username") + ":" + env.getProperty("api.lending.authorization.password").trim()).getBytes());
         return AUTHORIZATION.equals(authorization);
     }
 
@@ -62,25 +62,24 @@ public class LendingPlatformServiceImpl implements LendingPlatformService {
             }
             //get the product customer is qualified for
             List<LoanProduct> products = lendingPlatformRepository.getLoanList();
-            LoanOfferPayload loanProduct = new LoanOfferPayload();
             List<LoanOfferPayload> offers = new ArrayList<>();
             for (LoanProduct qualifiedAmount : products) {
+                LoanOfferPayload loanProduct = new LoanOfferPayload();
                 double qualifiedCustomerAmount = Double.valueOf(qualifiedCustomer.getQualifiedLoanAmount());
                 double productAmount = Double.valueOf(qualifiedAmount.getMaxLimit());
-
-                if (qualifiedCustomerAmount <= productAmount) {
+                if (qualifiedCustomerAmount >= productAmount) {
                     loanProduct.setLoanType(qualifiedAmount.getProductType());
                     loanProduct.setLoanAmount(qualifiedAmount.getMaxLimit());
                     loanProduct.setInterestRate(qualifiedAmount.getInterestPercentage());
-                    loanProduct.setTenure(qualifiedAmount.getTenure());
+                    loanProduct.setTenure(qualifiedAmount.getTenure());                 
                 }
                 offers.add(loanProduct);
             }
             responsePayload.setResponseCode(env.getProperty("api.lending.success.code"));
             responsePayload.setLoanOffers(offers);
             String responseJson = gson.toJson(responsePayload);
-            return responseJson;
 
+            return responseJson;
         } catch (Exception ex) {
             return ex.getMessage();
         }
@@ -93,13 +92,13 @@ public class LendingPlatformServiceImpl implements LendingPlatformService {
         LendingResponsePayload responsePayload = new LendingResponsePayload();
         if (loanAmount <= minimumAmount) {
             responsePayload.setResponseCode(env.getProperty("api.lending.failed.code"));
-            responsePayload.setResponseMessage(messageSource.getMessage("appMessages.loanApplication.failed", new Object[]{requestPayload.getMobileNumber().trim()}, Locale.ENGLISH));
+            responsePayload.setResponseMessage("Sorry, loan application failed.");
 
             String responseJson = gson.toJson(responsePayload);
             return responseJson;
         }
         responsePayload.setResponseCode(env.getProperty("api.lending.success.code"));
-        responsePayload.setResponseMessage(messageSource.getMessage("appMessages.loanApplication.success", new Object[]{requestPayload.getMobileNumber().trim()}, Locale.ENGLISH));
+        responsePayload.setResponseMessage("Loan application successful.");
         String responseJson = gson.toJson(responsePayload);
         return responseJson;
     }
